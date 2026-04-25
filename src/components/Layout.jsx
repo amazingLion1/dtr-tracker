@@ -1,15 +1,15 @@
 import {
   LayoutDashboard, CalendarDays, BookOpen,
-  Printer, LogOut, Menu, X, ChevronDown, Sun, Moon, Bell, BellOff, Download, Settings, History
+  Printer, LogOut, Menu, X, ChevronDown, Sun, Moon, Download, Settings, History, ShieldCheck
 } from 'lucide-react'
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { exportDtrToCsv } from '../utils/exportUtils'
 import { exportBackup, importBackup } from '../utils/backupUtils'
 import { useDtrData } from '../hooks/useDtrData'
 import { formatMonthYear } from '../utils/dateUtils'
-import { ShieldCheck, ArrowLeft } from 'lucide-react'
-import ConnectionStatus from './ui/ConnectionStatus'
 import { useToast } from './ui/Toast'
+import { useStore } from '../lib/store'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const navItems = [
   { id: 'dashboard', label: 'Dashboard',        icon: LayoutDashboard },
@@ -17,14 +17,6 @@ const navItems = [
   { id: 'journal',   label: 'Weekly Journal',    icon: BookOpen },
   { id: 'archive',   label: 'Archive',           icon: History },
 ]
-const printItems = [
-  { id: 'print-dtr',     label: 'Print DTR',     icon: Printer },
-  { id: 'print-journal', label: 'Print Journal', icon: Printer },
-]
-const allItems = [...navItems, ...printItems]
-
-import { useStore } from '../lib/store'
-import { motion, AnimatePresence } from 'framer-motion'
 
 export default function Layout({ 
   children, viewingUser, onExitView, onLogout 
@@ -33,13 +25,10 @@ export default function Layout({
     page, setPage, 
     profile, 
     theme, toggleTheme,
-    sidebarOpen, setSidebarOpen,
-    logout
+    sidebarOpen, setSidebarOpen
   } = useStore()
   
-  const [printOpen, setPrintOpen] = useState(false)
   const toast = useToast()
-  
   const { dtrData } = useDtrData(profile?.id)
   const isDark = theme === 'dark'
   
@@ -50,30 +39,6 @@ export default function Layout({
     const m = now.getMonth() + 1
     exportDtrToCsv(dtrData, y, m, profile.name, formatMonthYear(y, m))
     toast.success('CSV exported successfully')
-    setPrintOpen(false)
-    setSidebarOpen(false)
-  }
-
-  const handleBackupExport = async () => {
-    try {
-      await exportBackup(profile.id)
-      toast.success('Backup downloaded successfully')
-    } catch (err) {
-      toast.error('Failed to export backup')
-    }
-    setPrintOpen(false)
-    setSidebarOpen(false)
-  }
-
-  const handleBackupImport = (e) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    importBackup(profile.id, file, () => {
-      toast.success('Backup restored successfully! Reloading…')
-      setTimeout(() => window.location.reload(), 1500)
-    })
-    setPrintOpen(false)
-    setSidebarOpen(false)
   }
 
   const NavItem = ({ active, onClick, icon: Icon, label }) => (
@@ -112,7 +77,9 @@ export default function Layout({
             </div>
           </motion.div>
         )}
-      </AnimatePresence>      {/* ── Top Navbar ── */}
+      </AnimatePresence>
+
+      {/* ── Top Navbar ── */}
       <header className="no-print sticky top-0 z-50 bg-surface border-b border-border shadow-sm">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
 
@@ -127,30 +94,15 @@ export default function Layout({
           {/* Main Nav (Desktop) */}
           <nav className="hidden md:flex flex-1 items-center justify-center px-2">
             <div className="flex items-center bg-surface-2 p-1 rounded-xl border border-border shadow-inner max-w-full overflow-x-auto no-scrollbar">
-              <NavItem 
-                active={page === 'dashboard'} 
-                onClick={() => setPage('dashboard')} 
-                icon={LayoutDashboard} 
-                label="Dashboard" 
-              />
-              <NavItem 
-                active={page === 'dtr'} 
-                onClick={() => setPage('dtr')} 
-                icon={CalendarDays} 
-                label="DTR" 
-              />
-              <NavItem 
-                active={page === 'journal'} 
-                onClick={() => setPage('journal')} 
-                icon={BookOpen} 
-                label="Journal" 
-              />
-              <NavItem 
-                active={page === 'archive'} 
-                onClick={() => setPage('archive')} 
-                icon={History} 
-                label="Archive" 
-              />
+              {navItems.map(item => (
+                <NavItem 
+                  key={item.id}
+                  active={page === item.id} 
+                  onClick={() => setPage(item.id)} 
+                  icon={item.icon} 
+                  label={item.label} 
+                />
+              ))}
               
               {/* Export Dropdown */}
               <div className="relative group ml-1">
