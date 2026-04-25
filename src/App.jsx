@@ -37,6 +37,7 @@ function AppContent() {
   const [users, setUsers] = useState([])
   const [viewingUserId, setViewingUserId] = useState(null)
   const [isLoadingProfile, setIsLoadingProfile] = useState(true)
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
 
   const { remindersEnabled, toggleReminders } = useReminders(profile?.id)
 
@@ -110,20 +111,23 @@ function AppContent() {
   const viewingUser = users.find(u => u.id === viewingUserId) || profile
 
   const handleLogout = async () => {
+    setIsLoggingOut(true)
     setIsLoadingProfile(true)
     try {
       await signOut()
+      // Clear all state immediately
       setSession(null)
       setUser(null)
       setProfile(null)
       setUsers([])
       setViewingUserId(null)
       storeLogout()
+      setPage('dashboard')
     } catch (err) {
       console.error('[signOut]', err)
     } finally {
       setIsLoadingProfile(false)
-      setPage('dashboard')
+      setIsLoggingOut(false)
     }
   }
 
@@ -159,11 +163,11 @@ function AppContent() {
     )
   }
 
-  if (!session) {
+  if (!session || isLoggingOut) {
     return <Login isDark={theme === 'dark'} toggleTheme={toggleTheme} />
   }
 
-  if (!profile && session) {
+  if (!profile && session && !isLoggingOut) {
     return (
       <div className="min-h-screen bg-bg flex items-center justify-center p-6">
         <div className="max-w-sm w-full text-center">
