@@ -288,8 +288,6 @@ export default function WeeklyJournal({ userId }) {
         </footer>
       </div>
 
-      </div>
-
       {/* Modals */}
       <AnimatePresence>
         {showSubmitModal && (

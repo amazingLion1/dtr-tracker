@@ -419,8 +419,6 @@ export default function DTR({ userId }) {
         </footer>
       </div>
 
-      </div>
-
       {/* Modals */}
       <ConfirmDialog open={showSignDialog} onClose={() => setShowSignDialog(false)} onConfirm={handleSign} title="Digitally Sign Month" message="Authorize and lock this month's records." confirmLabel="Sign & Lock" variant="warning" input inputPlaceholder="Supervisor name" />
       <ConfirmDialog open={showRefreshDialog} onClose={() => setShowRefreshDialog(false)} onConfirm={handleRefresh} title="Refresh Process?" message="This will reset signatures and archive the current version." confirmLabel="Archive & Reset" variant="warning" />
