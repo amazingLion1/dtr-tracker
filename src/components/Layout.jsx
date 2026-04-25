@@ -123,150 +123,105 @@ export default function Layout({
             </div>
           </motion.div>
         )}
-      </AnimatePresence>
-
-      {/* ── Top Navbar ── */}
+      </AnimatePresence>      {/* ── Top Navbar ── */}
       <header className="no-print sticky top-0 z-50 bg-surface border-b border-border shadow-sm">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
 
           {/* Brand */}
-          <motion.div 
-            whileHover={{ scale: 1.02 }}
-            className="flex items-center gap-3 shrink-0 cursor-pointer"
-            onClick={() => setPage('dashboard')}
-          >
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-accent to-accent-hover flex items-center justify-center shadow-lg shadow-accent/20">
-              <CalendarDays size={16} className="text-white" />
+          <div className="flex items-center gap-3 shrink-0 cursor-pointer" onClick={() => setPage('dashboard')}>
+            <div className="w-9 h-9 rounded-xl bg-accent flex items-center justify-center text-white shadow-lg shadow-accent/20">
+              <CalendarDays size={18} />
             </div>
-            <span className="text-text-primary font-black text-lg tracking-tight hidden sm:block">
-              {profile?.role === 'superadmin' ? 'SuperAdmin' : 'DTR Tracker'}
-            </span>
-          </motion.div>
+            <span className="text-text-primary font-bold text-lg tracking-tight hidden sm:block">DTR Tracker</span>
+          </div>
 
-          {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-1 bg-surface-2/50 p-1 rounded-2xl border border-border/50">
-            {profile?.role === 'superadmin' ? (
-              <NavLink item={{ id: 'dashboard', label: 'Users', icon: ShieldCheck }} />
-            ) : (
-              navItems.map(item => <NavLink key={item.id} item={item} />)
-            )}
-
-            {profile?.role !== 'superadmin' && (
-              <div className="relative">
-              <button
-                onClick={() => setPrintOpen(p => !p)}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-all
-                  ${printItems.some(i => i.id === page)
-                    ? 'text-accent bg-accent/10'
-                    : 'text-text-secondary hover:text-text-primary hover:bg-surface-2'
-                  }`}
-              >
-                <Printer size={16} />
-                Export
-                <ChevronDown size={14} className={`transition-transform duration-200 ${printOpen ? 'rotate-180' : ''}`} />
-              </button>
-              <AnimatePresence>
-                {printOpen && (
-                  <>
-                    <div className="fixed inset-0 z-10" onClick={() => setPrintOpen(false)} />
-                    <motion.div 
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      className="absolute right-0 top-full mt-2 bg-surface border border-border rounded-2xl shadow-2xl z-20 py-2 min-w-[200px] overflow-hidden"
-                    >
-                      {printItems.map(item => (
-                        <button
-                          key={item.id}
-                          onClick={() => { setPage(item.id); setPrintOpen(false) }}
-                          className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors
-                            ${page === item.id ? 'text-accent bg-accent/5' : 'text-text-secondary hover:text-text-primary hover:bg-surface-2'}`}
-                        >
-                          <item.icon size={15} />
-                          {item.label}
-                        </button>
-                      ))}
-                      <div className="h-px bg-border my-1.5 mx-3" />
-                      <button
-                        onClick={handleCsvExport}
-                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-surface-2 transition-colors"
-                      >
-                        <Download size={15} />
-                        Export CSV
-                      </button>
-                      <button
-                        onClick={handleBackupExport}
-                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-surface-2 transition-colors"
-                      >
-                        <Download size={15} />
-                        Cloud Backup
-                      </button>
-                      <label className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-surface-2 transition-colors cursor-pointer">
-                        <Download size={15} className="rotate-180" />
-                        Restore Snapshot
-                        <input type="file" accept=".json" onChange={handleBackupImport} className="hidden" />
-                      </label>
-                    </motion.div>
-                  </>
-                )}
-              </AnimatePresence>
+          {/* Main Nav (Desktop) */}
+          <nav className="hidden md:flex flex-1 items-center justify-center px-2">
+            <div className="flex items-center bg-surface-2 p-1 rounded-xl border border-border shadow-inner max-w-full overflow-x-auto no-scrollbar">
+              <NavItem 
+                active={page === 'dashboard'} 
+                onClick={() => setPage('dashboard')} 
+                icon={LayoutDashboard} 
+                label="Dashboard" 
+              />
+              <NavItem 
+                active={page === 'dtr'} 
+                onClick={() => setPage('dtr')} 
+                icon={CalendarDays} 
+                label="DTR" 
+              />
+              <NavItem 
+                active={page === 'journal'} 
+                onClick={() => setPage('journal')} 
+                icon={BookOpen} 
+                label="Journal" 
+              />
+              <NavItem 
+                active={page === 'archive'} 
+                onClick={() => setPage('archive')} 
+                icon={History} 
+                label="Archive" 
+              />
+              
+              {/* Export Dropdown */}
+              <div className="relative group ml-1">
+                <button className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold text-text-secondary hover:text-text-primary transition-all">
+                  <Printer size={16} />
+                  <span>Export</span>
+                  <ChevronDown size={14} className="opacity-50" />
+                </button>
+                <div className="absolute top-full right-0 mt-1 w-48 bg-surface border border-border rounded-xl shadow-xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                  <button onClick={() => setPage('print-dtr')} className="w-full text-left px-4 py-2 text-xs font-bold text-text-secondary hover:text-accent hover:bg-accent/5">Print DTR</button>
+                  <button onClick={() => setPage('print-journal')} className="w-full text-left px-4 py-2 text-xs font-bold text-text-secondary hover:text-accent hover:bg-accent/5">Print Journal</button>
+                  <div className="h-px bg-border my-1 mx-2" />
+                  <button onClick={handleCsvExport} className="w-full text-left px-4 py-2 text-xs font-bold text-text-secondary hover:text-accent hover:bg-accent/5">Export CSV</button>
+                </div>
+              </div>
             </div>
-            )}
           </nav>
 
-          {/* Right Actions */}
-          <div className="flex items-center gap-2">
-            <ConnectionStatus />
-
-            <button
-              onClick={toggleTheme}
-              className="w-10 h-10 flex items-center justify-center rounded-xl text-text-secondary hover:text-accent hover:bg-accent/5 transition-all border border-transparent hover:border-accent/10"
-            >
+          {/* Right Side */}
+          <div className="flex items-center gap-2 shrink-0">
+            <button onClick={toggleTheme} className="w-9 h-9 flex items-center justify-center rounded-xl text-text-secondary hover:text-text-primary hover:bg-surface-2 transition-all border border-transparent hover:border-border">
               {isDark ? <Sun size={18} /> : <Moon size={18} />}
             </button>
-            
-            <button
-              onClick={() => setPage('settings')}
-              className={`w-10 h-10 flex items-center justify-center rounded-xl transition-all border border-transparent hover:border-border
-                ${page === 'settings' ? 'text-accent bg-accent/10' : 'text-text-secondary hover:text-text-primary hover:bg-surface-2'}`}
+            <button 
+              onClick={() => setPage('settings')} 
+              className={`w-9 h-9 flex items-center justify-center rounded-xl transition-all border ${page === 'settings' ? 'bg-accent/10 text-accent border-accent/20' : 'text-text-secondary border-transparent hover:border-border'}`}
             >
               <Settings size={18} />
             </button>
-
-            <button
-              onClick={logout}
-              className="hidden md:flex items-center gap-3 pl-2 pr-4 py-2 rounded-xl hover:bg-red-500/10 transition-all border border-transparent hover:border-red-500/20 group"
-            >
-              <div className="w-7 h-7 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center shrink-0 shadow-sm">
-                <span className="text-accent text-[11px] font-bold">{profile?.name?.[0]?.toUpperCase()}</span>
+            
+            <div className="h-6 w-px bg-border mx-1 hidden sm:block" />
+            
+            <div className="flex items-center gap-2">
+              <div className="flex flex-col items-end hidden lg:flex">
+                <span className="text-xs font-bold text-text-primary leading-none truncate max-w-[120px]">{profile?.name}</span>
+                <span className="text-[9px] font-bold text-text-secondary uppercase tracking-widest mt-1 opacity-60">{profile?.role}</span>
               </div>
-              <div className="flex flex-col items-start leading-tight">
-                <span className="text-text-primary text-xs font-bold truncate max-w-[100px]">
-                  {profile?.name?.split(' ')[0]}
-                </span>
-                <span className="text-[9px] text-text-secondary uppercase tracking-widest font-black opacity-50">Logout</span>
-              </div>
-              <LogOut size={13} className="text-text-secondary/50 group-hover:text-red-400 transition-colors ml-1" />
-            </button>
+              <button onClick={onLogout} className="w-9 h-9 flex items-center justify-center rounded-xl text-text-secondary hover:text-red-500 hover:bg-red-500/10 transition-all border border-transparent hover:border-red-500/20">
+                <LogOut size={18} />
+              </button>
+            </div>
 
-            {/* Mobile hamburger */}
-            <button
+            {/* Mobile Menu Toggle */}
+            <button 
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="md:hidden w-10 h-10 flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors rounded-xl bg-surface-2"
+              className="md:hidden w-9 h-9 flex items-center justify-center rounded-xl text-text-secondary hover:text-text-primary bg-surface-2 border border-border"
             >
               {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
         </div>
 
-        {/* Mobile menu */}
+        {/* Mobile Menu Overlay */}
         <AnimatePresence>
           {sidebarOpen && (
             <motion.div 
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="md:hidden border-t border-border bg-bg overflow-hidden"
+              className="md:hidden border-t border-border bg-surface overflow-hidden shadow-2xl"
             >
               <div className="p-4 space-y-1">
                 {navItems.map(item => (
@@ -282,7 +237,7 @@ export default function Layout({
                 ))}
                 <div className="h-px bg-border my-2" />
                 <button
-                  onClick={() => { logout(); setSidebarOpen(false) }}
+                  onClick={() => { onLogout(); setSidebarOpen(false) }}
                   className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl text-sm font-bold text-red-400 hover:bg-red-500/10 transition-all"
                 >
                   <LogOut size={18} />

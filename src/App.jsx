@@ -145,7 +145,10 @@ function AppContent() {
     setUsers(prev => prev.map(u => u.id === updatedProfile.id ? updatedProfile : u))
   }
 
-  if (session === undefined || isLoadingProfile) {
+  // ── Authentication Rendering Logic ────────────────────────────────────────
+  
+  // 1. Initial Loading State
+  if (session === undefined || (isLoadingProfile && !isLoggingOut)) {
     return (
       <div className="min-h-screen bg-bg flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
@@ -163,11 +166,13 @@ function AppContent() {
     )
   }
 
+  // 2. Not Logged In or Currently Logging Out
   if (!session || isLoggingOut) {
     return <Login isDark={theme === 'dark'} toggleTheme={toggleTheme} />
   }
 
-  if (!profile && session && !isLoggingOut) {
+  // 3. Logged In but Profile Missing (Rare / Error Case)
+  if (!profile) {
     return (
       <div className="min-h-screen bg-bg flex items-center justify-center p-6">
         <div className="max-w-sm w-full text-center">
@@ -177,6 +182,7 @@ function AppContent() {
           <h2 className="text-text-primary text-lg font-bold mb-2">Account Not Found</h2>
           <p className="text-text-secondary text-sm mb-6 leading-relaxed">
             Your login was successful, but no profile is linked to this account. 
+            Please contact your administrator.
           </p>
           <button onClick={handleLogout} className="bg-accent hover:bg-accent-hover text-white px-8 py-2.5 rounded-lg text-sm font-semibold transition-all">
             Sign Out
