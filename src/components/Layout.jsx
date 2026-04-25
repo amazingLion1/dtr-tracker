@@ -76,26 +76,15 @@ export default function Layout({
     setSidebarOpen(false)
   }
 
-  const NavLink = ({ item, onClick }) => (
-    <motion.button
-      whileHover={{ x: 4 }}
-      whileTap={{ scale: 0.98 }}
-      onClick={() => { setPage(item.id); setSidebarOpen(false); setPrintOpen(false); onClick?.() }}
-      className={`relative flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 group
-        ${page === item.id
-          ? 'text-accent bg-accent/10 shadow-sm shadow-accent/5'
-          : 'text-text-secondary hover:text-text-primary hover:bg-surface-2'
-        }`}
+  const NavItem = ({ active, onClick, icon: Icon, label }) => (
+    <button
+      onClick={onClick}
+      className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold transition-all
+        ${active ? 'bg-accent/10 text-accent' : 'text-text-secondary hover:text-text-primary hover:bg-surface-2'}`}
     >
-      <item.icon size={16} className={`transition-colors ${page === item.id ? 'text-accent' : 'text-text-secondary group-hover:text-text-primary'}`} />
-      {item.label}
-      {page === item.id && (
-        <motion.div 
-          layoutId="nav-active" 
-          className="absolute left-0 w-1 h-5 bg-accent rounded-r-full"
-        />
-      )}
-    </motion.button>
+      <Icon size={16} />
+      <span className="hidden lg:inline">{label}</span>
+    </button>
   )
 
   return (
