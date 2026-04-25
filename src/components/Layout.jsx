@@ -27,7 +27,7 @@ import { useStore } from '../lib/store'
 import { motion, AnimatePresence } from 'framer-motion'
 
 export default function Layout({ 
-  children, viewingUser, onExitView 
+  children, viewingUser, onExitView, onLogout 
 }) {
   const { 
     page, setPage, 
