@@ -171,8 +171,8 @@ function AppContent() {
     return <Login isDark={theme === 'dark'} toggleTheme={toggleTheme} />
   }
 
-  // 3. Logged In but Profile Missing (Rare / Error Case)
-  if (!profile) {
+  // 3. Logged In but Profile Missing (Stable State)
+  if (!profile && session && !isLoadingProfile && !isLoggingOut) {
     return (
       <div className="min-h-screen bg-bg flex items-center justify-center p-6">
         <div className="max-w-sm w-full text-center">
