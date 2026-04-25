@@ -48,18 +48,13 @@ export default function Archive({ userId }) {
   return (
     <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
       {/* Hero Header */}
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-           <div className="flex items-center gap-2 mb-2">
-              <History size={16} className="text-accent" />
-              <span className="text-[10px] font-black text-text-secondary uppercase tracking-[0.3em]">Snapshot Vault</span>
-           </div>
-           <h1 className="text-text-primary text-4xl font-black tracking-tighter">Document Archive</h1>
-           <p className="text-text-secondary text-sm font-medium mt-1">Review and compare persistent historical snapshots.</p>
+           <h1 className="text-text-primary text-3xl font-bold tracking-tight">Archives</h1>
+           <p className="text-text-secondary text-sm">Review your historical snapshots and records.</p>
         </div>
-        <div className="px-4 py-2 bg-surface-2 border border-border rounded-2xl flex items-center gap-3">
-           <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-           <span className="text-[10px] font-black text-text-primary uppercase tracking-widest">{archives.length} Records Verified</span>
+        <div className="px-4 py-2 bg-surface border border-border rounded-xl flex items-center gap-2">
+           <span className="text-xs font-bold text-text-primary">{archives.length} Records</span>
         </div>
       </header>
 

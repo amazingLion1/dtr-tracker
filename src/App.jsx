@@ -110,11 +110,21 @@ function AppContent() {
   const viewingUser = users.find(u => u.id === viewingUserId) || profile
 
   const handleLogout = async () => {
-    try { await signOut() } catch (err) { console.error('[signOut]', err) }
-    setSession(null)
-    storeLogout()
-    setUsers([])
-    setViewingUserId(null)
+    setIsLoadingProfile(true)
+    try {
+      await signOut()
+      setSession(null)
+      setUser(null)
+      setProfile(null)
+      setUsers([])
+      setViewingUserId(null)
+      storeLogout()
+    } catch (err) {
+      console.error('[signOut]', err)
+    } finally {
+      setIsLoadingProfile(false)
+      setPage('dashboard')
+    }
   }
 
   const handleDeleteUser = async (userId) => {
@@ -153,18 +163,18 @@ function AppContent() {
     return <Login isDark={theme === 'dark'} toggleTheme={toggleTheme} />
   }
 
-  if (!profile) {
+  if (!profile && session) {
     return (
       <div className="min-h-screen bg-bg flex items-center justify-center p-6">
         <div className="max-w-sm w-full text-center">
-          <div className="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto mb-5">
-            <CalendarDays size={30} className="text-red-400" />
+          <div className="w-16 h-16 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center mx-auto mb-5">
+            <CalendarDays size={30} className="text-gray-400" />
           </div>
           <h2 className="text-text-primary text-lg font-bold mb-2">Account Not Found</h2>
           <p className="text-text-secondary text-sm mb-6 leading-relaxed">
             Your login was successful, but no profile is linked to this account. 
           </p>
-          <button onClick={handleLogout} className="btn-primary px-8">
+          <button onClick={handleLogout} className="bg-accent hover:bg-accent-hover text-white px-8 py-2.5 rounded-lg text-sm font-semibold transition-all">
             Sign Out
           </button>
         </div>

@@ -8,7 +8,6 @@ import { useSwipeable } from 'react-swipeable'
 import ImageLightbox from './ui/ImageLightbox'
 import ConfirmDialog from './ui/ConfirmDialog'
 import { useStore } from '../lib/store'
-import LivePreview from './LivePreview'
 import { Skeleton } from './ui/Skeleton'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -116,7 +115,7 @@ export default function WeeklyJournal({ userId }) {
   }
 
   return (
-    <div {...handlers} className="max-w-6xl mx-auto flex flex-col xl:flex-row gap-8 pb-10">
+    <div {...handlers} className="max-w-6xl mx-auto space-y-8 pb-10">
       <div className="flex-1 space-y-8">
         {/* Header */}
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -289,7 +288,7 @@ export default function WeeklyJournal({ userId }) {
         </footer>
       </div>
 
-      <LivePreview type="journal" data={journalData} profile={profile} monthName={`${getMonthName(new Date(year, month-1))} ${year}`} />
+      </div>
 
       {/* Modals */}
       <AnimatePresence>

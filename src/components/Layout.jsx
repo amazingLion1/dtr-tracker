@@ -104,23 +104,21 @@ export default function Layout({
       <AnimatePresence>
         {viewingUser && (
           <motion.div 
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="bg-accent overflow-hidden"
+            initial={{ height: 0 }}
+            animate={{ height: 'auto' }}
+            exit={{ height: 0 }}
+            className="bg-accent text-white"
           >
-            <div className="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between gap-4">
-              <div className="flex items-center gap-2.5 text-white">
+            <div className="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between">
+              <div className="flex items-center gap-2 text-sm font-medium">
                 <ShieldCheck size={16} />
-                <span className="text-[11px] font-bold uppercase tracking-wider">Supervision Mode</span>
-                <span className="text-[11px] opacity-80">— Viewing records for {viewingUser.name}</span>
+                <span>Viewing records for {viewingUser.name}</span>
               </div>
               <button 
                 onClick={onExitView}
-                className="bg-white/20 hover:bg-white/30 text-white text-[10px] font-bold px-3 py-1 rounded-lg transition-colors border border-white/20 flex items-center gap-1.5"
+                className="bg-white/20 hover:bg-white/30 px-3 py-1 rounded text-xs font-bold transition-colors"
               >
-                <ArrowLeft size={12} />
-                Keep Records & Exit
+                Exit View
               </button>
             </div>
           </motion.div>
@@ -128,7 +126,7 @@ export default function Layout({
       </AnimatePresence>
 
       {/* ── Top Navbar ── */}
-      <header className="no-print sticky top-0 z-50 bg-bg/80 backdrop-blur-xl border-b border-border">
+      <header className="no-print sticky top-0 z-50 bg-surface border-b border-border shadow-sm">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
 
           {/* Brand */}

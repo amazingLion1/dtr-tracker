@@ -7,7 +7,6 @@ import { useSwipeable } from 'react-swipeable'
 import ConfirmDialog from './ui/ConfirmDialog'
 import { useToast } from './ui/Toast'
 import { useStore } from '../lib/store'
-import LivePreview from './LivePreview'
 import { Skeleton, TableSkeleton } from './ui/Skeleton'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -163,7 +162,7 @@ export default function DTR({ userId }) {
   }
 
   return (
-    <div {...handlers} className="max-w-6xl mx-auto flex flex-col xl:flex-row gap-8 pb-10">
+    <div {...handlers} className="max-w-6xl mx-auto space-y-6 pb-10">
       <div className="flex-1 space-y-6">
         {/* Header */}
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -420,7 +419,7 @@ export default function DTR({ userId }) {
         </footer>
       </div>
 
-      <LivePreview type="dtr" data={dtrData} profile={profile} monthName={`${getMonthName(new Date(year, month-1))} ${year}`} />
+      </div>
 
       {/* Modals */}
       <ConfirmDialog open={showSignDialog} onClose={() => setShowSignDialog(false)} onConfirm={handleSign} title="Digitally Sign Month" message="Authorize and lock this month's records." confirmLabel="Sign & Lock" variant="warning" input inputPlaceholder="Supervisor name" />

@@ -113,238 +113,109 @@ export default function Dashboard({ profile, userId }) {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 flex-1 w-full pb-10">
-      {/* Header */}
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div className="max-w-4xl mx-auto space-y-6 pb-10">
+      {/* Simple Header */}
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <motion.div 
-            initial={{ opacity: 0, x: -20 }} 
-            animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-2 text-accent mb-1"
-          >
-            <Sparkles size={14} className="animate-pulse" />
-            <span className="text-[10px] font-black uppercase tracking-[0.2em]">Live Status</span>
-          </motion.div>
-          <h1 className="text-text-primary text-3xl font-black tracking-tight">
+          <h1 className="text-text-primary text-2xl font-bold tracking-tight">
             Hi, {profile.name.split(' ')[0]} 👋
           </h1>
-          <p className="text-text-secondary text-sm font-medium">{dateStr}</p>
+          <p className="text-text-secondary text-sm">{dateStr}</p>
         </div>
-        
-        <div className="flex items-center gap-3">
-           <div className="px-4 py-2 bg-surface border border-border rounded-2xl flex items-center gap-3 shadow-sm">
-              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-xs font-bold text-text-primary tabular-nums tracking-wide">{timeStr}</span>
-           </div>
+        <div className="text-right">
+          <p className="text-2xl font-bold text-text-primary tabular-nums">{timeStr}</p>
+          <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">{status.label}</p>
         </div>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column: Clock & Controls */}
-        <div className="lg:col-span-2 space-y-6">
-          
-          {/* Main Hero Card */}
-          <section className="relative overflow-hidden bg-gradient-to-br from-surface to-surface-2 border border-border rounded-[2.5rem] p-8 shadow-2xl shadow-accent/5">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 rounded-full -mr-32 -mt-32 blur-3xl" />
-            
-            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
-              <div>
-                <p className="text-[10px] font-black text-text-secondary uppercase tracking-[0.2em] mb-4">Today's Session</p>
-                <div key={status.label} className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-bg border border-border shadow-sm mb-4 ${status.color}`}>
-                  <status.icon size={14} />
-                  <span className="text-[11px] font-bold uppercase tracking-wider">{status.label}</span>
-                </div>
-                <div className="flex items-baseline gap-2">
-                   <h2 className="text-5xl font-black text-text-primary tabular-nums tracking-tighter">
-                     {todayHours.toFixed(1)}
-                   </h2>
-                   <span className="text-lg font-bold text-text-secondary">hours</span>
-                </div>
-                <p className="text-text-secondary text-xs mt-1 font-medium italic">Current progress for today</p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3 w-full md:w-auto">
-                <ClockAction label="In AM"  icon={Sun}    value={todayEntry.timeInAM}  onClick={() => setTodayField('timeInAM')} locked={isLocked} />
-                <ClockAction label="Out AM" icon={Coffee} value={todayEntry.timeOutAM} onClick={() => setTodayField('timeOutAM')} locked={isLocked || !todayEntry.timeInAM} />
-                <ClockAction label="In PM"  icon={Moon}   value={todayEntry.timeInPM}  onClick={() => setTodayField('timeInPM')}  locked={isLocked || !todayEntry.timeOutAM} />
-                <ClockAction label="Out PM" icon={CheckCircle2} value={todayEntry.timeOutPM} onClick={() => setTodayField('timeOutPM')} locked={isLocked || !todayEntry.timeInPM} />
-              </div>
-            </div>
-          </section>
-
-          {/* Productivity Chart */}
-          <section className="bg-surface border border-border rounded-[2.5rem] p-8">
-             <div className="flex items-center justify-between mb-8">
-                <div>
-                   <h3 className="text-sm font-black text-text-primary uppercase tracking-widest">Productivity Trend</h3>
-                   <p className="text-text-secondary text-[11px] font-medium mt-1">Daily hours logged this week</p>
-                </div>
-                <div className="flex items-center gap-1.5 text-emerald-500 font-bold text-xs bg-emerald-500/10 px-2.5 py-1 rounded-full">
-                   <ArrowUpRight size={12} />
-                   <span>+2.4h</span>
-                </div>
-             </div>
-             
-             <div className="h-[200px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                   <AreaChart data={chartData}>
-                      <defs>
-                         <linearGradient id="colorHours" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="var(--accent)" stopOpacity={0.3}/>
-                            <stop offset="95%" stopColor="var(--accent)" stopOpacity={0}/>
-                         </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" opacity={0.5} />
-                      <XAxis 
-                         dataKey="name" 
-                         axisLine={false} 
-                         tickLine={false} 
-                         tick={{ fontSize: 10, fontWeight: 700, fill: 'var(--text-secondary)' }} 
-                         dy={10}
-                      />
-                      <YAxis hide domain={[0, 10]} />
-                      <Tooltip 
-                         contentStyle={{ 
-                            backgroundColor: 'var(--surface)', 
-                            border: '1px solid var(--border)',
-                            borderRadius: '16px',
-                            boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
-                            fontSize: '11px',
-                            fontWeight: 'bold'
-                         }}
-                         itemStyle={{ color: 'var(--accent)' }}
-                      />
-                      <Area 
-                         type="monotone" 
-                         dataKey="hours" 
-                         stroke="var(--accent)" 
-                         strokeWidth={3} 
-                         fillOpacity={1} 
-                         fill="url(#colorHours)" 
-                      />
-                   </AreaChart>
-                </ResponsiveContainer>
-             </div>
-          </section>
-        </div>
-
-        {/* Right Column: Progress & Vault */}
-        <div className="space-y-6">
-          {/* OJT Progress Card */}
-          <section className="bg-surface-2 border border-border rounded-[2.5rem] p-8">
-             <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-2xl bg-accent flex items-center justify-center text-white shadow-lg shadow-accent/20">
-                   <Target size={20} />
-                </div>
-                <div>
-                   <p className="text-[10px] font-black text-text-secondary uppercase tracking-widest">Total Progress</p>
-                   <p className="text-sm font-bold text-text-primary tracking-tight">{totalAllTimeHours.toFixed(1)} / {requiredHours}h</p>
-                </div>
-             </div>
-
-             <div className="space-y-4">
-                <div className="relative h-4 w-full bg-bg border border-border rounded-full overflow-hidden p-0.5">
-                   <motion.div 
-                      initial={{ width: 0 }}
-                      animate={{ width: `${progressPercent}%` }}
-                      transition={{ duration: 1, ease: "easeOut" }}
-                      className="h-full rounded-full bg-gradient-to-r from-accent to-accent-hover relative"
-                   >
-                      <div className="absolute inset-0 bg-[linear-gradient(45deg,rgba(255,255,255,0.1)_25%,transparent_25%,transparent_50%,rgba(255,255,255,0.1)_50%,rgba(255,255,255,0.1)_75%,transparent_75%,transparent)] bg-[length:20px_20px] animate-[progress-stripe_1s_linear_infinite]" />
-                   </motion.div>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                   <span className="text-[10px] font-black text-text-secondary uppercase tracking-widest">{progressPercent.toFixed(1)}% Done</span>
-                   <span className="text-[10px] font-black text-accent uppercase tracking-widest">Target 100%</span>
-                </div>
-             </div>
-          </section>
-
-          {/* Stats Grid */}
-          <div className="grid grid-cols-2 gap-4">
-             <CompactStat icon={TrendingUp} label="Monthly" value={`${monthTotal.toFixed(1)}h`} />
-             <CompactStat icon={Calendar}   label="Work Days" value={daysWorked} />
-          </div>
-
-          {/* Mini Vault */}
-          <section className="bg-surface border border-border rounded-[2.5rem] overflow-hidden">
-             <div className="p-6 border-b border-border bg-surface-2/30 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                   <ShieldCheck size={16} className="text-emerald-500" />
-                   <h3 className="text-[10px] font-black text-text-primary uppercase tracking-[0.2em]">Verified Vault</h3>
-                </div>
-                <div className="w-5 h-5 rounded-full bg-emerald-500 text-white text-[9px] flex items-center justify-center font-black">
-                   {approvals.filter(a => a.data.dtr_status === 'approved' || a.data.journal_status === 'approved').length}
-                </div>
-             </div>
-             <div className="p-6 space-y-3">
-                {approvals.slice(0, 3).map(app => (
-                   <div key={app.month_key} className="flex items-center justify-between p-3 bg-surface-2 rounded-2xl border border-border/50">
-                      <div className="flex items-center gap-3">
-                         <div className="w-8 h-8 rounded-lg bg-bg border border-border flex items-center justify-center">
-                            <FileText size={14} className="text-text-secondary" />
-                         </div>
-                         <span className="text-xs font-bold text-text-primary uppercase tracking-tighter">{app.month_key}</span>
-                      </div>
-                      <CheckCircle2 size={14} className="text-emerald-500" />
-                   </div>
-                ))}
-                {approvals.length === 0 && (
-                   <p className="text-center text-[10px] text-text-secondary font-medium py-4 italic">No verified records found yet.</p>
-                )}
-             </div>
-          </section>
-        </div>
+      {/* Stats Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <StatCard icon={Clock} label="Today" value={`${todayHours.toFixed(1)}h`} />
+        <StatCard icon={TrendingUp} label="This Month" value={`${monthTotal.toFixed(1)}h`} />
+        <StatCard icon={Target} label="Total Progress" value={`${progressPercent.toFixed(1)}%`} />
+        <StatCard icon={Calendar} label="Work Days" value={daysWorked} />
       </div>
 
-      <ConfirmDialog
-        open={showClearConfirm}
-        onClose={() => setShowClearConfirm(false)}
-        onConfirm={handleClearDay}
-        title="Clear Today's Entries"
-        message="This will remove all time entries for today. This cannot be undone."
-        confirmLabel="Clear Entries"
-        variant="danger"
-      />
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Time Logging */}
+        <section className="lg:col-span-2 bg-surface border border-border rounded-xl p-6 shadow-sm">
+          <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider mb-6 flex items-center gap-2">
+            <Clock size={16} className="text-accent" /> Log Your Time
+          </h3>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <TimeButton label="In AM" value={todayEntry.timeInAM} onClick={() => setTodayField('timeInAM')} locked={isLocked} icon={Sun} />
+            <TimeButton label="Out AM" value={todayEntry.timeOutAM} onClick={() => setTodayField('timeOutAM')} locked={isLocked || !todayEntry.timeInAM} icon={Coffee} />
+            <TimeButton label="In PM" value={todayEntry.timeInPM} onClick={() => setTodayField('timeInPM')} locked={isLocked || !todayEntry.timeOutAM} icon={Moon} />
+            <TimeButton label="Out PM" value={todayEntry.timeOutPM} onClick={() => setTodayField('timeOutPM')} locked={isLocked || !todayEntry.timeInPM} icon={CheckCircle2} />
+          </div>
+        </section>
+
+        {/* Verification Status */}
+        <section className="bg-surface border border-border rounded-xl p-6 shadow-sm">
+          <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider mb-6 flex items-center gap-2">
+            <ShieldCheck size={16} className="text-emerald-500" /> Recent Approvals
+          </h3>
+          <div className="space-y-3">
+            {approvals.slice(0, 3).map(app => (
+              <div key={app.month_key} className="flex items-center justify-between p-3 bg-bg border border-border rounded-lg">
+                <span className="text-xs font-bold text-text-primary">{app.month_key}</span>
+                <CheckCircle2 size={14} className="text-emerald-500" />
+              </div>
+            ))}
+            {approvals.length === 0 && (
+              <p className="text-center text-xs text-text-secondary italic py-4">No records yet.</p>
+            )}
+          </div>
+        </section>
+      </div>
+
+      {/* Chart */}
+      <section className="bg-surface border border-border rounded-xl p-6 shadow-sm">
+        <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider mb-6">Weekly Hours Trend</h3>
+        <div className="h-[200px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-border)" />
+              <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--color-text-secondary)' }} />
+              <YAxis hide />
+              <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+              <Area type="monotone" dataKey="hours" stroke="var(--color-accent)" fill="var(--color-accent)" fillOpacity={0.1} />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      </section>
+
     </div>
   )
 }
 
-function ClockAction({ label, icon: Icon, value, onClick, locked }) {
+function StatCard({ icon: Icon, label, value }) {
   return (
-    <motion.button
-      whileTap={{ scale: 0.95 }}
+    <div className="bg-surface border border-border rounded-xl p-5 shadow-sm">
+      <Icon size={16} className="text-accent mb-3" />
+      <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest mb-1">{label}</p>
+      <p className="text-xl font-bold text-text-primary tabular-nums">{value}</p>
+    </div>
+  )
+}
+
+function TimeButton({ label, icon: Icon, value, onClick, locked }) {
+  return (
+    <button
       onClick={onClick}
       disabled={!!value || locked}
-      className={`flex flex-col items-center gap-1.5 p-3 rounded-2xl border transition-all duration-200
+      className={`flex flex-col items-center gap-2 p-4 rounded-xl border transition-all
         ${value
-          ? 'bg-surface border-border opacity-40'
+          ? 'bg-gray-50 border-gray-200 opacity-50'
           : locked
-            ? 'bg-surface border-border opacity-20 grayscale'
-            : 'bg-bg border-border hover:border-accent hover:shadow-lg hover:shadow-accent/5 cursor-pointer group'
+            ? 'bg-gray-50 border-gray-200 opacity-20'
+            : 'bg-white border-border hover:border-accent hover:shadow-md cursor-pointer group'
         }`}
     >
-      <Icon size={16} className={`transition-colors ${value || locked ? 'text-text-secondary' : 'text-accent group-hover:scale-110'}`} />
-      <span className="text-[9px] font-black uppercase tracking-widest text-text-secondary">{label}</span>
-      {value && <span className="text-[10px] font-bold text-text-primary tabular-nums">{value}</span>}
-    </motion.button>
+      <Icon size={18} className={`transition-colors ${value || locked ? 'text-gray-400' : 'text-accent group-hover:scale-110'}`} />
+      <span className="text-[10px] font-bold uppercase tracking-widest text-text-secondary">{label}</span>
+      {value && <span className="text-xs font-bold text-text-primary tabular-nums">{value}</span>}
+    </button>
   )
-}
-
-function CompactStat({ icon: Icon, label, value }) {
-  return (
-    <div className="bg-surface border border-border rounded-[1.75rem] p-5">
-      <Icon size={14} className="text-accent mb-3" />
-      <p className="text-[9px] font-black text-text-secondary uppercase tracking-[0.15em] mb-1">{label}</p>
-      <p className="text-xl font-black text-text-primary tabular-nums">{value}</p>
-    </div>
-  )
-}
-
-function getGreeting(date) {
-  const h = date.getHours()
-  if (h < 12) return 'Morning'
-  if (h < 18) return 'Afternoon'
-  return 'Evening'
 }
